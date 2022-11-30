@@ -1,10 +1,11 @@
 import logging
 import shutil
-from pathlib import Path
-from typing import TextIO
-from io import StringIO
-from time import time_ns
 from contextlib import redirect_stdout
+from io import StringIO
+from pathlib import Path
+from time import time_ns
+from typing import TextIO
+
 import click
 import pytest
 import requests
