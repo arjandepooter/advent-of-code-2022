@@ -131,7 +131,7 @@ def run(day: int, input_file: TextIO | None, part: int | None, submit: bool = Fa
     console.log(test_output.getvalue(), highlight=False)
 
     if input_file is None:
-        input_file = (work_dir / "inputs" / f"day{day:02}.txt").open()
+        input_file = (work_dir / "inputs" / f"day{day}.txt").open()
 
     input_data = input_file.read()
     solution = __import__(
