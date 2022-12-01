@@ -23,11 +23,7 @@ logging.basicConfig(
 
 console = Console()
 work_dir = Path(__file__).parent.parent
-aoc_session = requests.Session(
-    headers={
-        "User-Agent": "github.com/arjandepooter/advent-of-code-2022 by mail@arjandepooter.nl",
-    }
-)
+aoc_session = requests.Session()
 
 
 def submit_solution(day: int, part: int, answer: str) -> None:
@@ -58,7 +54,7 @@ def run_solution(func: callable, input: str) -> str | None:
             result = func(input)
             duration = time_ns() - start
         console.log(
-            f"Result for {func.__name__} calculated in {duration/10e6:.2f} ms: [bold green]{result}"
+            f"Result for {func.__name__} calculated in {(duration/10e6):.2f} ms: [bold green]{result}"
         )
         return str(result)
     except NotImplementedError:
@@ -71,6 +67,9 @@ def run_solution(func: callable, input: str) -> str | None:
 @click.option("--session_token", envvar="AOC_SESSION_TOKEN")
 def cli(session_token):
     aoc_session.cookies.set("session", session_token)
+    aoc_session.headers[
+        "User-Agent"
+    ] = "github.com/arjandepooter/advent-of-code-2022 by mail@arjandepooter.nl"
 
 
 @click.command()
