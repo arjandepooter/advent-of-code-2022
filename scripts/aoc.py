@@ -23,7 +23,11 @@ logging.basicConfig(
 
 console = Console()
 work_dir = Path(__file__).parent.parent
-aoc_session = requests.Session()
+aoc_session = requests.Session(
+    headers={
+        "User-Agent": "github.com/arjandepooter/advent-of-code-2022 by mail@arjandepooter.nl",
+    }
+)
 
 
 def submit_solution(day: int, part: int, answer: str) -> None:
