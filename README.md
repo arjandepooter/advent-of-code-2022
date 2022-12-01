@@ -4,6 +4,6 @@ My solutions in Python. To run the solutions make sure you have `python 3.11` an
 
 ## Results
 
-|                 day | pt. 1 time | pt. 1 pos. | pt. 2 time | pt. 2 pos |    delta |
-| ------------------: | ---------: | ---------: | ---------: | --------: | -------: |
-| [1](aoc_2022/day01) |   00:02:43 |        915 |   00:03:48 |       675 | 00:01:05 |
+|                 day | pt. 1 time | pt. 1 pos. | pt. 2 time | pt. 2 pos |      delta |
+| ------------------: | ---------: | ---------: | ---------: | --------: | ---------: |
+| [1](aoc_2022/day01) | `00:02:43` |      `915` | `00:03:48` |     `675` | `00:01:05` |

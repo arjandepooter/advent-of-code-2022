@@ -52,8 +52,10 @@ def run_solution(func: callable, input: str) -> str | None:
         with console.status(f"Running {func.__name__}..."):
             start = time_ns()
             result = func(input)
-            end = time_ns()
-        console.log(f"Result calculated in {end - start} ns: {result}")
+            duration = time_ns() - start
+        console.log(
+            f"Result for {func.__name__} calculated in {duration/10e6:.2f} ms: [bold green]{result}"
+        )
         return str(result)
     except NotImplementedError:
         console.log("Part 2 not implemented", style="red")
