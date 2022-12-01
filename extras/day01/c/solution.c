@@ -2,6 +2,18 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+uint64_t _atoi(const char *str)
+{
+    uint64_t result = 0;
+    while (*str >= '0' && *str <= '9')
+    {
+        result *= 10;
+        result += *str - '0';
+        str++;
+    }
+    return result;
+}
+
 int main(int argc, char **argv)
 {
     char *buffer;
@@ -12,7 +24,7 @@ int main(int argc, char **argv)
     buffer = malloc(size * sizeof(char));
 
     uint64_t top3[3] = {0, 0, 0};
-    uint64_t block;
+    uint64_t block = 0;
 
     while ((chars = getline(&buffer, &size, f)) != -1)
     {
@@ -38,7 +50,7 @@ int main(int argc, char **argv)
         else
         {
 
-            block += atoi(buffer);
+            block += _atoi(buffer);
         }
     }
 

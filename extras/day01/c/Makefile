@@ -1,3 +1,3 @@
-CFLAG=-O2
+CFLAGS=-O2
 
 all: solution
