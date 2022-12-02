@@ -7,3 +7,4 @@ My solutions in Python. To run the solutions make sure you have `python 3.11` an
 |                 day | pt. 1 time | pt. 1 pos. | pt. 2 time | pt. 2 pos |      delta |
 | ------------------: | ---------: | ---------: | ---------: | --------: | ---------: |
 | [1](aoc_2022/day01) | `00:02:43` |      `915` | `00:03:48` |     `675` | `00:01:05` |
+| [2](aoc_2022/day02) | `00:15:42` |     `6179` | `00:20:56` |    `4918` | `00:05:14` |
