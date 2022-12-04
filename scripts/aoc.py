@@ -7,6 +7,7 @@ from time import time_ns
 from typing import TextIO
 
 import click
+import openai
 import pytest
 import requests
 from lxml import html
@@ -94,6 +95,8 @@ def download(day: int):
         if r.status_code == 200:
             input_file.write_text(r.text)
             console.log(f"Input for day {day} saved in {input_file}", style="green")
+            head = "\n".join(r.text.splitlines()[:20])
+            console.log(f"Head of input file:\n{head}")
         else:
             console.log(f"Request failed with {r.status_code}", style="red")
 
@@ -152,9 +155,35 @@ def run(day: int, input_file: TextIO | None, part: int | None, submit: bool = Fa
         submit_solution(day, part, result)
 
 
+@click.command()
+@click.argument("day", type=click.IntRange(1, 25), required=True)
+@click.option("--openai-key", envvar="OPENAI_API_KEY")
+def explain(day: int, openai_key: str):
+    openai.api_key = openai_key
+
+    with aoc_session.get(f"https://adventofcode.com/2022/day/{day}") as r:
+        if r.status_code != 200:
+            return console.log(f"Request failed with {r.status_code}", style="red")
+
+        text = html.fromstring(r.text).find(".//main/article").text_content()
+
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=f"Give a brief summary of the following puzzle:\n\n{text}",
+            temperature=0.7,
+            max_tokens=256,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0,
+        )
+
+        console.log(response.choices[0].text)
+
+
 cli.add_command(download)
 cli.add_command(create)
 cli.add_command(run)
+cli.add_command(explain)
 
 
 if __name__ == "__main__":
