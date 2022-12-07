@@ -71,6 +71,5 @@ def part_2(input: str) -> Return:
     root = parse_data(input)
 
     to_free = 30_000_000 - (70_000_000 - root.size)
-    sorted_dirs = sorted(list(root), key=lambda d: d.size, reverse=True)
 
-    return min([d.size for d in sorted_dirs if d.size >= to_free])
+    return min([d.size for d in root if d.size >= to_free])
