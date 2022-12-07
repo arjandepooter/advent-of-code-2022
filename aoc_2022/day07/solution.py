@@ -52,9 +52,9 @@ def parse_data(data: str) -> Dir:
             cwd = d
         elif line.startswith("$ ls"):
             continue
+        elif line.startswith("dir"):
+            continue
         else:
-            if line.startswith("dir"):
-                continue
             size, name = line.split(" ")
             cwd.add_file(name, int(size))
 
