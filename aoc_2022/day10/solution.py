@@ -1,77 +1,39 @@
-from itertools import cycle
+from typing import Iterator
 
 Data = list[tuple[str, int | None]]
 Return = int
 
 
 def parse_data(data: str) -> Data:
-    instructions = []
+    return [
+        ((p := line.split(" "))[0], int(p[1]) if len(p) > 1 else None)
+        for line in data.splitlines()
+    ]
 
-    for line in data.splitlines():
-        opcode, *args = line.split()
-        args = int(args[0]) if args else None
-        instructions.append((opcode, args))
 
-    return instructions
+def iter_cycle(data: Data) -> Iterator[int]:
+    reg = 1
+
+    for opcode, arg in data:
+        yield reg
+        if opcode == "addx":
+            yield reg
+            reg += arg
 
 
 def part_1(input: str) -> Return:
-    data = parse_data(input)
+    values = list(iter_cycle(parse_data(input)))
 
-    s = [20, 60, 100, 140, 180, 220]
-    c = 1
-    acc = 0
-    reg = 1
-    instructions = cycle(data)
-
-    while len(s) > 0:
-        opcode, arg = next(instructions)
-        arg = arg or 0
-
-        if opcode == "noop":
-            c += 1
-        if opcode == "addx":
-            c += 2
-
-        if c == s[0]:
-            reg += arg
-            acc += reg * s.pop(0)
-        elif c > s[0]:
-            acc += reg * s.pop(0)
-            reg += arg
-        else:
-            reg += arg
-
-    return acc
+    return sum(values[i - 1] * i for i in range(20, len(values), 40))
 
 
 def part_2(input: str):
     data = parse_data(input)
 
-    reg = 1
-    c = 0
-
-    values = []
-    instructions = cycle(data)
-
-    while c < 240:
-        opcode, arg = next(instructions)
-
-        if opcode == "noop":
-            values.append(reg)
-            c += 1
-        if opcode == "addx":
-            values.append(reg)
-            values.append(reg)
-            c += 2
-            reg += arg
-
-    for i, value in enumerate(values):
+    for i, value in enumerate(iter_cycle(data)):
         col = i % 40
+
         if col == 0:
             print()
 
-        if value - 1 <= col <= value + 1:
-            print("#", end="")
-        else:
-            print(" ", end="")
+        print("█" if value - 1 <= col <= value + 1 else " ", end="")
