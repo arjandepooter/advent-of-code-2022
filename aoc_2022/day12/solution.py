@@ -42,9 +42,9 @@ def iter_neighbors(grid: Data, pos: tuple[int, int]) -> Iterator[tuple[int, int]
 
 
 def get_path(
-    grid: list[list[int]], start: tuple[int, int], end: tuple[int, int]
+    grid: list[list[int]], starts: list[tuple[int, int]], end: tuple[int, int]
 ) -> int | None:
-    queue = deque([(0, start)])
+    queue = deque((0, start) for start in starts)
     visited = set()
 
     while queue:
@@ -61,9 +61,9 @@ def get_path(
 
 
 def part_1(input: str) -> Return:
-    grid, cur, end = parse_data(input)
+    grid, start, end = parse_data(input)
 
-    path = get_path(grid, cur, end)
+    path = get_path(grid, [start], end)
 
     return path
 
@@ -71,12 +71,10 @@ def part_1(input: str) -> Return:
 def part_2(input: str) -> Return:
     grid, _, end = parse_data(input)
 
-    paths = []
-    for r, c in product(range(len(grid)), range(len(grid[0]))):
-        if grid[r][c] == 0:
-            path = get_path(grid, (r, c), end)
+    starts = [
+        (r, c)
+        for r, c in product(range(len(grid)), range(len(grid[0])))
+        if grid[r][c] == 0
+    ]
 
-            if path is not None:
-                paths.append(path)
-
-    return min(paths)
+    return get_path(grid, starts, end)
