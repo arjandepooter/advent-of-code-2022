@@ -49,12 +49,13 @@ def get_path(
 
     while queue:
         dist, (r, c) = queue.popleft()
-        if (r, c) in visited:
-            continue
-        visited.add((r, c))
 
         if (r, c) == end:
             return dist
+        if (r, c) in visited:
+            continue
+
+        visited.add((r, c))
 
         for rn, rc in iter_neighbors(grid, (r, c)):
             queue.append((dist + 1, (rn, rc)))

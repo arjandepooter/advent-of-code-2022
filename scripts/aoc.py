@@ -3,7 +3,7 @@ import shutil
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
-from time import time_ns
+from time import time
 from typing import TextIO
 
 import click
@@ -51,11 +51,11 @@ def run_solution(func: callable, input: str) -> str | None:
 
     try:
         with console.status(f"Running {func.__name__}..."):
-            start = time_ns()
+            start = time()
             result = func(input)
-            duration = time_ns() - start
+            duration = time() - start
         console.log(
-            f"Result for {func.__name__} calculated in {(duration/10e6):.2f} ms: [bold green]{result}"
+            f"Result for {func.__name__} calculated in {(duration*1000):.2f} ms: [bold green]{result}"
         )
         return str(result)
     except NotImplementedError:
