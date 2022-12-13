@@ -1,6 +1,6 @@
 from functools import cmp_to_key
 
-Data = list[str]
+Data = list["Data"] | int
 Return = int
 
 
@@ -22,10 +22,8 @@ def compare_signals(s1, s2):
         return compare_signals(s1, [s2])
 
     for c1, c2 in zip(s1, s2):
-        cmp = compare_signals(c1, c2)
-        if cmp == 0:
-            continue
-        return cmp
+        if (cmp := compare_signals(c1, c2)) != 0:
+            return cmp
 
     return len(s1) - len(s2)
 
