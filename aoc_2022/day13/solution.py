@@ -1,51 +1,68 @@
-from functools import cmp_to_key
+from functools import cmp_to_key, reduce
 
-Data = list["Data"] | int
+Signal = list["Signal"] | int
 Return = int
 
 
-def parse_data(data: str) -> Data:
+def parse_signal(signal: str) -> tuple[Signal, int]:
+    c = signal[0]
+    if c.isdigit():
+        for i in range(1, len(signal)):
+            if not signal[i].isdigit():
+                return int(signal[:i]), i
+    if c == "[":
+        acc = []
+        i = 1
+        while signal[i] != "]":
+            if signal[i] == ",":
+                i += 1
+                continue
+            s, t = parse_signal(signal[i:])
+            acc.append(s)
+            i += t
+        return acc, i + 1
+
+
+def parse_data(data: str) -> list[tuple[Signal, Signal]]:
     blocks = data.strip().split("\n\n")
     pairs = []
     for block in blocks:
-        lines = block.splitlines()
-        pairs.append((eval(lines[0]), eval(lines[1])))
+        signals = [parse_signal(line)[0] for line in block.splitlines()[:2]]
+        pairs.append(tuple(signals))
     return pairs
 
 
 def compare_signals(s1, s2):
-    if type(s1) == int and type(s2) == int:
-        return s1 - s2
-    if type(s1) == int:
-        return compare_signals([s1], s2)
-    if type(s2) == int:
-        return compare_signals(s1, [s2])
-
-    for c1, c2 in zip(s1, s2):
-        if (cmp := compare_signals(c1, c2)) != 0:
-            return cmp
-
-    return len(s1) - len(s2)
+    match s1, s2:
+        case int(), int():
+            return s1 - s2
+        case int(), _:
+            return compare_signals([s1], s2)
+        case _, int():
+            return compare_signals(s1, [s2])
+        case list(), list():
+            for c1, c2 in zip(s1, s2):
+                if (cmp := compare_signals(c1, c2)) != 0:
+                    return cmp
+            return len(s1) - len(s2)
 
 
 def part_1(input: str) -> Return:
     data = parse_data(input)
 
-    acc = 0
-    for i, (p1, p2) in enumerate(data, 1):
-        if compare_signals(p1, p2) < 0:
-            acc += i
-
-    return acc
+    return sum(i for i, (p1, p2) in enumerate(data, 1) if compare_signals(p1, p2) < 0)
 
 
 def part_2(input: str) -> Return:
     data = [d for line in parse_data(input) for d in line]
-    data.extend([[[2]], [[6]]])
+    dividers = [[[2]], [[6]]]
 
+    data.extend(dividers)
     data.sort(key=cmp_to_key(compare_signals))
 
-    return (data.index([[2]]) + 1) * (data.index([[6]]) + 1)
+    return reduce(
+        lambda a, b: a * b, (i for i, d in enumerate(data, 1) if d in dividers)
+    )
 
 
 if __name__ == "__main__":
