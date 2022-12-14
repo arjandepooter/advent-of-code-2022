@@ -29,24 +29,20 @@ def fill_grid(paths: list[list[tuple[int, int]]]) -> set[tuple[int, int]]:
 
 
 def flow(grid: set[tuple[int, int]], max_y, floor=None) -> bool:
-    path = set()
     x, y = 500, 0
     while y <= max_y and (x, y) not in grid:
         if floor is not None and y + 1 >= floor:
             grid.add((x, y))
             return True
-        elif (x, y + 1) not in grid:
-            path.add((x, y + 1))
-        elif (x - 1, y + 1) not in grid:
-            path.add((x - 1, y + 1))
-            x -= 1
-        elif (x + 1, y + 1) not in grid:
-            path.add((x + 1, y + 1))
-            x += 1
+
+        for dx, dy in (0, 1), (-1, 1), (1, 1):
+            if (x + dx, y + dy) not in grid:
+                x += dx
+                y += dy
+                break
         else:
             grid.add((x, y))
             return True
-        y += 1
 
     return False
 
