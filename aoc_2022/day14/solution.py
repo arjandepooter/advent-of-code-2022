@@ -47,6 +47,22 @@ def flow(grid: set[tuple[int, int]], max_y, floor=None) -> bool:
     return False
 
 
+def dfs(grid: set[tuple[int, int]], floor: int) -> int:
+    queue = [(500, 0)]
+    visited = set()
+
+    for x, y in queue:
+        if (x, y) in visited:
+            continue
+
+        visited.add((x, y))
+        for dx, dy in (0, 1), (-1, 1), (1, 1):
+            if (x + dx, y + dy) not in grid and y + dy < floor:
+                queue.append((x + dx, y + dy))
+
+    return len(visited)
+
+
 def part_1(input: str) -> Return:
     data = parse_data(input)
     grid = fill_grid(data)
@@ -64,11 +80,7 @@ def part_2(input: str) -> Return:
     grid = fill_grid(data)
     floor = max(y for _, y in grid) + 2
 
-    acc = 0
-    while flow(grid, floor, floor):
-        acc += 1
-
-    return acc
+    return dfs(grid, floor)
 
 
 if __name__ == "__main__":
