@@ -38,7 +38,7 @@ def clamp(x: int, _min: int, _max: int):
     return max(min(x, _max), _min)
 
 
-def part_1(input: str, row=10_000) -> Return:
+def part_1(input: str, row=2_000_000) -> Return:
     sensors = parse_data(input)
     points = {}
 
