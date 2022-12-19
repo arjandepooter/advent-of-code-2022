@@ -24,7 +24,6 @@ class State:
     clay_robots: int = 0
     obsidian: int = 0
     obsidian_robots: int = 0
-    geode: int = 0
     geode_robots: int = 0
 
     def __hash__(self):
@@ -41,18 +40,6 @@ class State:
             )
         )
 
-    def __eq__(self, other):
-        return (
-            self.time_left == other.time_left
-            and self.ore == other.ore
-            and self.ore_robots == other.ore_robots
-            and self.clay == other.clay
-            and self.clay_robots == other.clay_robots
-            and self.obsidian == other.obsidian
-            and self.obsidian_robots == other.obsidian_robots
-            and self.geode_robots == other.geode_robots
-        )
-
     def next_states(self) -> Iterator["State"]:
         next_state = replace(
             self,
@@ -60,7 +47,6 @@ class State:
             ore=self.ore + self.ore_robots,
             clay=self.clay + self.clay_robots,
             obsidian=self.obsidian + self.obsidian_robots,
-            geode=self.geode + self.geode_robots,
         )
 
         if (
@@ -135,9 +121,12 @@ def maximize_geodes(time: int, blueprint: Blueprint) -> int:
     @cache
     def wrapped(state: State) -> int:
         if state.time_left == 0:
-            return state.geode
+            return 0
 
-        return max(wrapped(next_state) for next_state in state.next_states())
+        return max(
+            wrapped(next_state) + state.geode_robots
+            for next_state in state.next_states()
+        )
 
     state = State(time, blueprint)
     return wrapped(state)
