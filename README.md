@@ -25,3 +25,4 @@ My solutions in Python. To run the solutions make sure you have `python 3.11` an
 |    [17](aoc_2022/day17/solution.py) | `00:32:09` |      `266` | `01:43:36` |     `966` | `01:11:27` |
 |    [18](aoc_2022/day18/solution.py) | `00:07:20` |      `876` | `00:31:47` |     `977` | `00:24:27` |
 |    [19](aoc_2022/day19/solution.py) | `05:21:07` |     `2951` | `06:23:48` |    `2566` | `01:02:41` |
+|    [20](aoc_2022/day20/solution.py) | `01:36:15` |     `2538` | `02:03:13` |    `2518` | `00:26:58` |
