@@ -1,9 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from operator import add, floordiv as div, mul, sub
 from typing import Callable
-
-Data = list[str]
-Return = int
 
 
 @dataclass
@@ -19,6 +16,53 @@ class Monkey:
 
     def __hash__(self) -> int:
         return hash(self.id)
+
+
+class X:
+    def __init__(self, stack=None):
+        self.stack = stack or []
+
+    def push(self, item):
+        return X(self.stack + [item])
+
+    def evaluate(self, value) -> int:
+        for op in self.stack[::-1]:
+            value = op(value)
+        return value
+
+    def __eq__(self, other) -> int:
+        return self.evaluate(other)
+
+    def __add__(self, other):
+        return self.push(lambda x: x - other)
+
+    def __radd__(self, other):
+        return self.push(lambda x: x - other)
+
+    def __sub__(self, other):
+        return self.push(lambda x: x + other)
+
+    def __rsub__(self, other):
+        return self.push(lambda x: other - x)
+
+    def __mul__(self, other):
+        return self.push(lambda x: x // other)
+
+    def __rmul__(self, other):
+        return self.push(lambda x: x // other)
+
+    def __floordiv__(self, other):
+        return self.push(lambda x: x * other)
+
+    def __rfloordiv__(self, other):
+        return self.push(lambda x: other // x)
+
+    def __str__(self):
+        return f"X({len(self.stack)})"
+
+
+Data = dict[str, Monkey]
+Return = int
 
 
 def parse_data(data: str) -> Data:
@@ -47,23 +91,6 @@ def evaluate(monkeys: Data, monkey_id: str) -> int:
     )
 
 
-def binsearch(monkeys: Data, monkey_id: str, goal: int, reverse=False) -> int:
-    low = 0
-    high = 2**64
-    while low <= high:
-        mid = (low + high) // 2
-        monkeys["humn"] = Monkey("humn", value=mid)
-        result = evaluate(monkeys, monkey_id)
-        if result == goal:
-            return mid
-        elif (reverse and result > goal) or (not reverse and result < goal):
-            low = mid + 1
-        else:
-            high = mid - 1
-
-    return binsearch(monkeys, monkey_id, goal, not reverse)
-
-
 def part_1(input: str) -> Return:
     monkeys = parse_data(input)
 
@@ -73,18 +100,10 @@ def part_1(input: str) -> Return:
 def part_2(input: str) -> Return:
     monkeys = parse_data(input)
 
-    left = monkeys["root"].left
-    right = monkeys["root"].right
+    monkeys["root"] = replace(monkeys["root"], op=lambda x, y: x == y)
+    monkeys["humn"] = replace(monkeys["humn"], value=X())
 
-    l = evaluate(monkeys, left)
-    r = evaluate(monkeys, right)
-
-    monkeys["humn"] = Monkey("humn", value=0)
-    n = evaluate(monkeys, left)
-    monkey_id = right if n == l else left
-    goal = l if n == l else r
-
-    return binsearch(monkeys, monkey_id, goal)
+    return evaluate(monkeys, "root")
 
 
 if __name__ == "__main__":
