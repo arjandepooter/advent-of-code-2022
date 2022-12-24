@@ -57,7 +57,7 @@ def tick(
 
     for point in points:
         if all(n not in s_points for n in point.neighbours()):
-            proposed_points[point].append(point)
+            next_points.append(point)
             continue
 
         for check in checks:
